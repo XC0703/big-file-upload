@@ -1,6 +1,6 @@
 # 1、前言
 
-本文旨在讲清楚大文件分片上传、断点续传、秒传这件事，并基于 React+Nest 实现了一个小项目，相关代码已上传到地址：https://github.com/XC0703/big-file-upload。
+本文旨在讲清楚大文件分片上传、断点续传、秒传这件事，并基于 React+Nest 实现了一个小项目，相关代码已上传到地址：https://github.com/XC0703/big-file-upload 。
 
 在文章开始之前，首先需要知道两件事：
 
