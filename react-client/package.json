@@ -1,0 +1,49 @@
+{
+	"name": "vite-react-ts-template",
+	"private": true,
+	"version": "1.0.0",
+	"type": "module",
+	"author": {
+		"name": "明远湖之鱼",
+		"email": "488548816@qq.com",
+		"url": "https://github.com/XC0703"
+	},
+	"scripts": {
+		"start": "pnpm run dev",
+		"dev": "vite",
+		"build": "tsc && vite build",
+		"preview": "vite preview",
+		"eslint": "eslint --fix --max-warnings=0",
+		"prettier": "prettier --write src/**/*.{ts,tsx,less}"
+	},
+	"dependencies": {
+		"react": "^18.2.0",
+		"react-dom": "^18.2.0",
+		"spark-md5": "^3.0.2"
+	},
+	"devDependencies": {
+		"@commitlint/cli": "^19.2.2",
+		"@commitlint/config-conventional": "^19.2.2",
+		"@types/node": "^18.15.11",
+		"@types/react": "^18.0.28",
+		"@types/react-dom": "^18.0.11",
+		"@types/spark-md5": "^3.0.4",
+		"@typescript-eslint/eslint-plugin": "^5.57.1",
+		"@typescript-eslint/parser": "^5.57.1",
+		"@vitejs/plugin-react": "^3.1.0",
+		"@vitejs/plugin-react-refresh": "^1.3.6",
+		"eslint": "^8.38.0",
+		"eslint-plugin-import": "^2.28.0",
+		"eslint-plugin-react": "^7.32.2",
+		"less": "^4.1.3",
+		"lint-staged": "^15.2.2",
+		"prettier": "^3.2.5",
+		"typescript": "^4.9.3",
+		"vite": "^4.2.0"
+	},
+	"lint-staged": {
+		"src/**/*.{ts,tsx}": [
+			"npm run eslint"
+		]
+	}
+}
