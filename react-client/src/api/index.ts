@@ -19,6 +19,7 @@ export const uploadChunk = async (params: IUploadChunkParams) => {
 	formData.append('chunk', new Blob([params.chunk]));
 	formData.append('chunkIndex', params.chunkIndex.toString());
 	formData.append('fileHash', params.fileHash);
+	formData.append('extname', params.extname);
 	const res = await request('/file/upload', {
 		method: 'POST',
 		body: formData

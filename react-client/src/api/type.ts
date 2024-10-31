@@ -14,6 +14,8 @@ export interface IVertifyRes {
 	neededFileList: number[];
 	// 消息
 	message: string;
+	// 文件路径
+	filePath: string;
 }
 
 // 文件分片上传接口请求参数
@@ -24,6 +26,8 @@ export interface IUploadChunkParams {
 	chunkIndex: number;
 	// 文件Hash
 	fileHash: string;
+	// 文件后缀名
+	extname: string;
 }
 
 // 通知后端合并文件接口请求参数
@@ -32,4 +36,14 @@ export interface IMergeFileParams {
 	fileHash: string;
 	// 文件后缀名
 	extname: string;
+}
+
+// 文件上传方法返回参数
+export interface IUploadFileRes {
+	// 是否成功
+	success: boolean;
+	// 文件路径
+	filePath?: string;
+	// 消息
+	message: string | '';
 }

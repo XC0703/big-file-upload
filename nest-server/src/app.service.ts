@@ -3,12 +3,15 @@ import * as fs from 'fs-extra';
 import { join } from 'path';
 import { respHttp } from './utils/response';
 import { HttpStatus } from './utils/constant';
+import { getFileSuffixByName } from './utils/general';
 
 @Injectable()
 export class AppService {
   async verifyFile(fileHash: string, totalCount: number, extname: string) {
-    const dirPath = join(process.cwd(), '\\uploadedFiles\\chunkFile', fileHash);
+    const fileSuffix = getFileSuffixByName(extname);
+    const dirPath = join(process.cwd(), `/uploads/${fileSuffix}/${fileHash}`);
     const filePath = dirPath + '.' + extname;
+    const fileDBPath = `/uploads/${fileSuffix}/${fileHash}.${extname}`;
     let res = Array(totalCount)
       .fill(0)
       .map((_, index) => index + 1);
@@ -17,8 +20,12 @@ export class AppService {
       // 读取文件状态
       fs.statSync(filePath);
       // 读取成功，即秒传
-      const data = { neededFileList: [], message: '该文件已被上传', filePath };
-      return respHttp(HttpStatus.SUCCESS, data);
+      const data = {
+        neededFileList: [],
+        message: '该文件已被上传',
+        filePath: fileDBPath,
+      };
+      return respHttp(HttpStatus.FILE_EXIST, data);
     } catch (fileError) {
       try {
         fs.statSync(dirPath);
@@ -31,14 +38,13 @@ export class AppService {
           const data = { neededFileList: res };
           return respHttp(HttpStatus.SUCCESS, data);
         } else {
-          // 未进行合并,去合并
-          this.mergeFile(fileHash, extname);
+          // 已上传所有分块但未进行合并, 通知前端合并文件
           const data = {
             neededFileList: [],
-            message: '已完成所有分片上传，文件合并中...',
-            filePath,
+            message: '已完成所有分片上传，请合并文件',
+            filePath: fileDBPath,
           };
-          return respHttp(HttpStatus.SUCCESS, data);
+          return respHttp(HttpStatus.ALL_CHUNK_UPLOAD, data);
         }
       } catch (dirError) {
         // 读取文件夹失败，返回全序列
@@ -49,9 +55,10 @@ export class AppService {
   }
 
   async uploadChunk(chunk: Express.Multer.File, chunkInfo: any): Promise<any> {
-    const { fileHash, chunkIndex } = chunkInfo;
+    const { fileHash, chunkIndex, extname } = chunkInfo;
 
-    const dirPath = join(process.cwd(), '/uploadedFiles/chunkFile', fileHash);
+    const fileSuffix = getFileSuffixByName(extname);
+    const dirPath = join(process.cwd(), `/uploads/${fileSuffix}/${fileHash}`);
     const chunkPath = join(dirPath, `chunk-${chunkIndex}`);
 
     try {
@@ -74,13 +81,20 @@ export class AppService {
   }
 
   async mergeFile(fileHash: string, extname: string) {
-    const dirPath = join(process.cwd(), '\\uploadedFiles\\chunkFile', fileHash);
+    const fileSuffix = getFileSuffixByName(extname);
+    const dirPath = join(process.cwd(), `/uploads/${fileSuffix}/${fileHash}`);
     const filePath = dirPath + '.' + extname;
+    const fileDBPath = `/uploads/${fileSuffix}/${fileHash}.${extname}`;
 
     try {
       // 检查文件是否已存在
       await fs.promises.access(filePath);
-      return respHttp(HttpStatus.SUCCESS, null, '文件已存在');
+      const data = {
+        neededFileList: [],
+        message: '该文件已被上传',
+        filePath: fileDBPath,
+      };
+      return respHttp(HttpStatus.FILE_EXIST, data);
     } catch (error) {
       // 文件不存在，继续执行
     }
@@ -129,7 +143,7 @@ export class AppService {
     return respHttp(
       HttpStatus.SUCCESS,
       {
-        filePath,
+        filePath: fileDBPath,
       },
       '文件合并成功',
     );

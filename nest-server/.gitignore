@@ -11,7 +11,7 @@ pnpm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
-uploadedFiles
+uploads
 
 # OS
 .DS_Store
